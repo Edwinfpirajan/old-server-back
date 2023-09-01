@@ -1,0 +1,84 @@
+package config
+
+import (
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/joho/godotenv"
+	"golang.org/x/crypto/ssh"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+)
+
+var DB *gorm.DB
+
+func ConnectDB() {
+	loadEnv()
+
+	sshHost := "10.100.0.13"
+	sshPort := "22"
+	sshUser := "opc"
+	keyPath := "./private_key.ppk"
+
+	sshConfig := &ssh.ClientConfig{
+		User: sshUser,
+		Auth: []ssh.AuthMethod{
+			publicKeyFile(keyPath),
+		},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+	}
+
+	sshAddress := fmt.Sprintf("%s:%s", sshHost, sshPort)
+
+	sshClient, err := ssh.Dial("tcp", sshAddress, sshConfig)
+	if err != nil {
+		log.Fatalf("Error connecting to SSH server: %v", err)
+	}
+
+	remote, err := sshClient.Dial("tcp", buildDSN())
+	if err != nil {
+		log.Fatalf("Error dialing to PostgreSQL: %v", err)
+	}
+
+	// dsn := buildDSN()
+	db, err := gorm.Open(postgres.New(postgres.Config{Conn: remote}), &gorm.Config{})
+	if err != nil {
+		log.Fatalf("Error connecting to database: %v", err)
+	}
+
+	DB = db
+
+	log.Println("Database connection successfully established")
+}
+
+func publicKeyFile(file string) ssh.AuthMethod {
+	buffer, err := os.ReadFile(file)
+	if err != nil {
+		return nil
+	}
+
+	key, err := ssh.ParsePrivateKey(buffer)
+	if err != nil {
+		return nil
+	}
+	return ssh.PublicKeys(key)
+}
+
+func loadEnv() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+}
+
+func buildDSN() string {
+	dbHost := os.Getenv("DB_HOST")
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+	dbPort := os.Getenv("DB_PORT")
+
+	dsn := "host=%s user=%s password=%s dbname=%s port=%s sslmode=disable"
+	return fmt.Sprintf(dsn, dbHost, dbUser, dbPassword, dbName, dbPort)
+}
