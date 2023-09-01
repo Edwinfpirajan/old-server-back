@@ -3,7 +3,5 @@ RUN mkdir /app
 ADD . /app
 WORKDIR /app
 ARG EnvironmentVariable
-RUN go build -o main .
-EXPOSE 8080
-
+RUN go mod download && go build -o main ./main.go
 CMD /app/main
