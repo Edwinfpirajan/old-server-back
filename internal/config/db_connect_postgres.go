@@ -1,11 +1,8 @@
 package config
 
 import (
-	"fmt"
 	"log"
-	"os"
 
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -13,7 +10,7 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
-	loadEnv()
+	// loadEnv()
 
 	// dsn := buildDSN()
 	dsn := "host=containers-us-west-210.railway.app user=postgres password=7xt3Vx6eAevhZTMmSiGJ dbname=railway port=7112 sslmode=disable"
@@ -41,20 +38,20 @@ func ConnectDB() {
 // 	return db
 // }
 
-func loadEnv() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
-}
+// func loadEnv() {
+// 	err := godotenv.Load()
+// 	if err != nil {
+// 		log.Fatalf("Error loading .env file")
+// 	}
+// }
 
-func buildDSN() string {
-	dbHost := os.Getenv("DB_HOST")
-	dbUser := os.Getenv("DB_USER")
-	dbPassword := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
-	dbPort := os.Getenv("DB_PORT")
+// func buildDSN() string {
+// 	dbHost := os.Getenv("DB_HOST")
+// 	dbUser := os.Getenv("DB_USER")
+// 	dbPassword := os.Getenv("DB_PASSWORD")
+// 	dbName := os.Getenv("DB_NAME")
+// 	dbPort := os.Getenv("DB_PORT")
 
-	dsn := "host=%s user=%s password=%s dbname=%s port=%s sslmode=disable"
-	return fmt.Sprintf(dsn, dbHost, dbUser, dbPassword, dbName, dbPort)
-}
+// 	dsn := "host=%s user=%s password=%s dbname=%s port=%s sslmode=disable"
+// 	return fmt.Sprintf(dsn, dbHost, dbUser, dbPassword, dbName, dbPort)
+// }
