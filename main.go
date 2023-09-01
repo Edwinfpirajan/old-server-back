@@ -23,6 +23,4 @@ func main() {
 	HOST := os.Getenv("SERVER_HOST")
 
 	e.Logger.Fatal(e.Start(fmt.Sprintf("%s:%d", HOST, PORT)))
-	//testint
-	//testing2
 }
