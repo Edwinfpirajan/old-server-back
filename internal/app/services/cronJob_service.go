@@ -27,19 +27,16 @@ func RunCronJob() {
 }
 
 func SyncData() error {
-	// Obtener los colaboradores de la base de datos fuente
 	sourceCollaborators, err := GetAllColab()
 	if err != nil {
 		return err
 	}
 
-	// Obtener los colaboradores de la base de datos de destino
 	destinationCollaborators, err := GetAllCollaborators()
 	if err != nil {
 		return err
 	}
 
-	// Realizar la comparación y alimentar la base de datos de destino con nuevos datos
 	err = syncCollaborators(sourceCollaborators, destinationCollaborators)
 	if err != nil {
 		return err
