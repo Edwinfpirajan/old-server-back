@@ -36,10 +36,11 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 		}
 		return errors.New("Colaborador no encontrado")
 	}
-
-	fmt.Println(collaborator.Id)
-
-	timeNow := time.Now()
+	loc, err := time.LoadLocation("America/Bogota")
+	if err != nil {
+		return err
+	}
+	timeNow := time.Now().In(loc)
 
 	var schedule models.Schedules
 	err = config.DB.Model(&schedule).Where("fk_collaborator_id = ? AND day = ?", collaborator.Id, timeNow.Format("Monday")).First(&schedule).Error
