@@ -224,7 +224,6 @@ func (service *AttendanceService) GetAllAttendanceForToLate() ([]entity.UserAtte
 	attendance := []entity.UserAttendanceData{}
 	err := config.DB.Table("collaborators c").
 		Select("c.f_name, c.l_name, c.email, c.leader, c.document, a.*").
-		Joins("INNER JOIN users u ON CONCAT(u.f_name, ' ', u.l_name) = c.leader").
 		Joins("INNER JOIN attendances a ON c.id = a.fk_collaborator_id").
 		Where("EXISTS (SELECT 1 FROM attendances WHERE fk_collaborator_id = c.id AND late = TRUE HAVING COUNT(*) > 2)").
 		Find(&attendance).Error

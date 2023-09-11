@@ -121,10 +121,85 @@ VALUES (
         '123456'
     );
 
+
+/* modulo novedades nómina */
+
 CREATE TABLE headquarters (
         id serial primary key,
-        name varchar(50) not null
+        name varchar(25) not null
     )
 
 INSERT INTO "headquarters" ("name")
 VALUES ('ADMINISTRATIVO'), ('ARKADIA'), ('BELLO'), ('CALASANZ'), ('CALIMA'), ('CEDRITOS'), ('CENTRO INTERNACIONAL'), ('CENTRO MAYOR'), ('CENTRO MEDELLIN'), ('CHAPINERO'), ('CHIA'), ('ENVIGADO'), ('FLORIDABLANCA'), ('FONTANAR'), ('HAYUELOS'), ('ITAGÜÍ'), ('MADELENA'), ('MODELIA'), ('MULTIPLAZA'), ('NUESTRO BOGOTÁ'), ('OLAYA'), ('PALATINO'), ('PIEDECUESTA'), ('PLAZA CENTRAL'), ('PLAZA DE LAS AMERICAS'), ('POBLADO'), ('RESTREPO'), ('SAN MARTÍN'), ('SANTAFÉ'), ('ONLINE'), ('SOACHA'), ('SUBA'), ('UNICENTRO DE OCCIDENTE'), ('VIRTUAL');
+
+CREATE TABLE concept_code (
+    id serial primary key,
+    code VARCHAR(5),
+    name VARCHAR(30)
+);
+
+
+CREATE TABLE personal_income_news (
+    id serial primary key,
+    document VARCHAR(20),
+    name VARCHAR(50),
+    created_at TIMESTAMP,
+    position VARCHAR(25),
+    fk_headquarters_id int, 
+    foreign key (fk_headquarters_id) references headquarters(id)
+);
+
+CREATE TABLE personal_retirement_news (
+    id serial primary key,
+    document VARCHAR(20),
+    name VARCHAR(50),
+    created_at TIMESTAMP,
+    position VARCHAR(25),
+    fk_headquarters_id int, 
+    foreign key (fk_headquarters_id) references headquarters(id),
+    --peace and save
+);
+
+CREATE TABLE personal_absence_news (
+    id serial primary key,
+    document VARCHAR(20),
+    name VARCHAR(50),
+    init_date DATE,
+    end_date DATE,
+    number_days INTEGER,
+    position VARCHAR(25),
+    fk_headquarters_id int,
+    fk_concept_code_id int, 
+    foreign key (fk_headquarters_id) references headquarters(id),
+    foreign key (fk_concept_code_id) references concept_code(id)
+);
+
+CREATE TABLE payments_news (
+    id serial primary key,
+    document VARCHAR(20),
+    name VARCHAR(50),
+    init_date DATE,
+    end_date DATE,
+    value VARCHAR(25),
+    position VARCHAR(25),
+    fk_headquarters_id int, 
+    fk_concept_code_id int, 
+    foreign key (fk_headquarters_id) references headquarters(id),
+    foreign key (fk_concept_code_id) references concept_code(id)
+);
+
+CREATE TABLE extra_time_news (
+    id serial primary key,
+    document VARCHAR(20),
+    name VARCHAR(50),
+    init_date DATE,
+    end_date DATE,
+    value VARCHAR(25),
+    position VARCHAR(25),
+    fk_headquarters_id int, 
+    fk_concept_code_id int, 
+    foreign key (fk_headquarters_id) references headquarters(id),
+    foreign key (fk_concept_code_id) references concept_code(id)
+);
+
+
